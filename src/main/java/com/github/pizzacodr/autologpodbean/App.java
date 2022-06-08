@@ -8,19 +8,19 @@ public class App {
 		
 		ConfigFile configFile = ConfigFactory.create(ConfigFile.class, System.getProperties());
 		
-		Podbean podbean = new Podbean(configFile);
+		Podbean podbean = new Podbean(configFile.chromeDriveLocation(), configFile.isHeadless());
 
-		podbean.loginPage(configFile);
+		podbean.loginPage(configFile.username(), configFile.password());
 
 		podbean.selectLiveStreamFromProfile();
 
 		podbean.startNewLiveShow();
 		
-		podbean.newLiveShowConfig(configFile);
+		podbean.newLiveShowConfig(configFile.streamFullTitle(), configFile.streamPartialTitleRightAfterDayOfTheWeek());
 		
 		podbean.inviteCoHosts(); 
 	    
-		podbean.onAir(configFile);
+		podbean.onAir(configFile.streamingTimeInMinutes());
 	    
 		podbean.offAir();
 	}

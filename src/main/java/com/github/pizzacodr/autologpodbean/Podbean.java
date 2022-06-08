@@ -17,27 +17,27 @@ class Podbean {
 	
 	private ChromeDriver driver;
 	
-	Podbean(ConfigFile configFile){
-		System.setProperty("webdriver.chrome.driver", configFile.chromeDriveLocation());
+	Podbean(String chromeDriveLocation, boolean isHeadless) {
+		System.setProperty("webdriver.chrome.driver", chromeDriveLocation);
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("use-fake-ui-for-media-stream");
 			
-		if (configFile.isHeadless()) {
+		if (isHeadless) {
 			options.addArguments("--headless");
 		}
 
 		driver = new ChromeDriver(options);
 	}
 	
-	public void loginPage(ConfigFile configFile) {
+	public void loginPage(String username, String password) {
 		driver.get("https://www.podbean.com/login");
 		new WebDriverWait(driver, Duration.ofSeconds(20))
 				.until(ExpectedConditions.elementToBeClickable(By.id("LoginForm_username")));
 
 		driver.findElement(By.id("LoginForm_username")).click();
-		driver.findElement(By.id("LoginForm_username")).sendKeys(configFile.username());
+		driver.findElement(By.id("LoginForm_username")).sendKeys(username);
 		driver.findElement(By.id("LoginForm_password")).click();
-		driver.findElement(By.id("LoginForm_password")).sendKeys(configFile.password());
+		driver.findElement(By.id("LoginForm_password")).sendKeys(password);
 		driver.findElement(By.name("yt0")).click();
 	}
 	
@@ -57,13 +57,13 @@ class Podbean {
 		driver.findElement(By.id("new-live-show-btn")).click();
 	}
 	
-	public void newLiveShowConfig(ConfigFile configFile) {
+	public void newLiveShowConfig(String streamFullTitle, String streamPartialTitleRightAfterDayOfTheWeek) {
 		new WebDriverWait(driver, Duration.ofSeconds(20))
-		.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".claimed-content")));
+			.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".claimed-content")));
 		driver.findElement(By.cssSelector(".claimed-content")).click();
 		
 		StringBuilder title = new StringBuilder();
-		if (configFile.streamFullTitle() == null || configFile.streamFullTitle().isEmpty() || configFile.streamFullTitle().trim().isEmpty()) {
+		if (streamFullTitle == null || streamFullTitle.isEmpty() || streamFullTitle.trim().isEmpty()) {
 			
 			Date date = new Date();
 			Locale locale = new Locale("en","US");
@@ -71,43 +71,43 @@ class Podbean {
 			DateFormat formatter = new SimpleDateFormat("EEEE", locale);
 		    title.append(formatter.format(date));
 		    
-		    if (configFile.streamPartialTitleRightAfterDayOfTheWeek() != null || !configFile.streamPartialTitleRightAfterDayOfTheWeek().isEmpty() || 
-		    		!configFile.streamPartialTitleRightAfterDayOfTheWeek().trim().isEmpty()) {
-		    	title.append(configFile.streamPartialTitleRightAfterDayOfTheWeek());
+		    if (streamPartialTitleRightAfterDayOfTheWeek != null || !streamPartialTitleRightAfterDayOfTheWeek.isEmpty() || 
+		    		!streamPartialTitleRightAfterDayOfTheWeek.trim().isEmpty()) {
+		    	title.append(streamPartialTitleRightAfterDayOfTheWeek);
 		    }
 		    
 		} else {
 			
-			title.append(configFile.streamFullTitle());
+			title.append(streamFullTitle);
 		}
 		
 		driver.findElement(By.id("LiveTask_title")).clear();
 		driver.findElement(By.id("LiveTask_title")).sendKeys(title);
 		
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
-	    wait.until(ExpectedConditions.elementToBeClickable(By.id("submit")));
+		new WebDriverWait(driver, Duration.ofSeconds(20))
+	    	.until(ExpectedConditions.elementToBeClickable(By.id("submit")));
 		driver.findElement(By.id("submit")).submit();
 	}
 	
 	public void inviteCoHosts() {
-		WebDriverWait wait2 = new WebDriverWait(driver, Duration.ofSeconds(20));
-	    wait2.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("iframe")));
+		new WebDriverWait(driver, Duration.ofSeconds(20))
+	    	.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("iframe")));
 	    
 	    driver.switchTo().frame(driver.findElements(By.tagName("iframe")).get(0));
 	    
-	    WebDriverWait wait3 = new WebDriverWait(driver, Duration.ofSeconds(20));
-	    wait3.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".done")));
+	    new WebDriverWait(driver, Duration.ofSeconds(20))
+	    	.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".done")));
 	    driver.findElement(By.cssSelector(".done")).click();
 	}
 	
-	public void onAir(ConfigFile configFile) throws InterruptedException {
+	public void onAir(Long streamingTimeInMinutes) throws InterruptedException {
 		driver.switchTo().defaultContent();
 	    
-	    WebDriverWait wait4 = new WebDriverWait(driver, Duration.ofSeconds(20));
-	    wait4.until(ExpectedConditions.visibilityOfElementLocated(By.className("el-card__body")));
+	    new WebDriverWait(driver, Duration.ofSeconds(20))
+	    	.until(ExpectedConditions.visibilityOfElementLocated(By.className("el-card__body")));
 	    
-	    WebDriverWait wait5 = new WebDriverWait(driver, Duration.ofSeconds(20));
-	    wait5.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//html/body/div[1]")));
+	    new WebDriverWait(driver, Duration.ofSeconds(20))
+	    	.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//html/body/div[1]")));
 
 	    driver.switchTo().defaultContent();
 	    driver.findElement(By.cssSelector("#start-live-btn > span")).click();
@@ -116,15 +116,15 @@ class Podbean {
 
 	    driver.findElement(By.xpath("/html/body/section/main/div[1]/div[3]/div/div[2]")).click(); //call in
 
-	    WebDriverWait wait6 = new WebDriverWait(driver, Duration.ofSeconds(20));
-	    wait6.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"audio-effects\"]/div/div[1]/div/div/span")));
+	    new WebDriverWait(driver, Duration.ofSeconds(20))
+	    	.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"audio-effects\"]/div/div[1]/div/div/span")));
 	    driver.findElement(By.xpath("//*[@id=\"audio-effects\"]/div/div[1]/div/div/span")).click(); //call in switch
 	     
 	    TimeUnit.SECONDS.sleep(2);
 	    
 	    driver.findElement(By.cssSelector("#start-live-btn > span")).click();
 	    
-	    TimeUnit.MINUTES.sleep(configFile.streamingTimeInMinutes());
+	    TimeUnit.MINUTES.sleep(streamingTimeInMinutes);
 	}
 	
 	public void offAir() throws InterruptedException {
@@ -137,5 +137,4 @@ class Podbean {
 	    TimeUnit.SECONDS.sleep(1);
 	    driver.findElement(By.xpath("/html/body/section/main/div[9]/div/div[3]/span/div/button[2]")).click(); //exit button
 	}
-
 }
