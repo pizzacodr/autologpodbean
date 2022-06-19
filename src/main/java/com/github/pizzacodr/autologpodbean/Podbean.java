@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverLogLevel;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -21,11 +22,13 @@ class Podbean {
 		System.setProperty("webdriver.chrome.driver", chromeDriveLocation);
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("use-fake-ui-for-media-stream");
+		options.addArguments("use-fake-device-for-media-stream");
 			
 		if (isHeadless) {
 			options.addArguments("--headless");
 		}
 
+		options.setLogLevel(ChromeDriverLogLevel.ALL);
 		driver = new ChromeDriver(options);
 	}
 	
@@ -114,6 +117,9 @@ class Podbean {
 	    driver.findElement(By.cssSelector(".bootstrap-show > span")).click();
 	    driver.findElement(By.cssSelector(".el-message-box__btns > .el-button--primary")).click();
 
+	    new WebDriverWait(driver, Duration.ofSeconds(20))
+    	.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/section/main/div[1]/div[3]/div/div[2]")));
+	    TimeUnit.SECONDS.sleep(1);
 	    driver.findElement(By.xpath("/html/body/section/main/div[1]/div[3]/div/div[2]")).click(); //call in
 
 	    new WebDriverWait(driver, Duration.ofSeconds(20))
@@ -136,5 +142,8 @@ class Podbean {
 	    
 	    TimeUnit.SECONDS.sleep(1);
 	    driver.findElement(By.xpath("/html/body/section/main/div[9]/div/div[3]/span/div/button[2]")).click(); //exit button
+	    
+	    TimeUnit.SECONDS.sleep(1);
+	    driver.close();
 	}
 }
