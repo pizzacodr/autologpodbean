@@ -142,8 +142,14 @@ class Podbean {
 	    
 	    TimeUnit.SECONDS.sleep(1);
 	    driver.findElement(By.xpath("/html/body/section/main/div[9]/div/div[3]/span/div/button[2]")).click(); //exit button
-	    
+	}
+	
+	public void endProcess() throws InterruptedException {
+		
 	    TimeUnit.SECONDS.sleep(1);
 	    driver.close();
+	    
+	    TimeUnit.SECONDS.sleep(1);
+	    driver.quit();
 	}
 }

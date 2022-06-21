@@ -11,17 +11,12 @@ public class App {
 		Podbean podbean = new Podbean(configFile.chromeDriveLocation(), configFile.isHeadless());
 
 		podbean.loginPage(configFile.username(), configFile.password());
-
 		podbean.selectLiveStreamFromProfile();
-
-		podbean.startNewLiveShow();
-		
-		podbean.newLiveShowConfig(configFile.streamFullTitle(), configFile.streamPartialTitleRightAfterDayOfTheWeek());
-		
-		podbean.inviteCoHosts(); 
-	    
-		podbean.onAir(configFile.streamingTimeInMinutes());
-	    
-		podbean.offAir();
+		podbean.startNewLiveShow();		
+		podbean.newLiveShowConfig(configFile.streamFullTitle(), configFile.streamPartialTitleRightAfterDayOfTheWeek());		
+		podbean.inviteCoHosts(); 	    
+		podbean.onAir(configFile.streamingTimeInMinutes());	    
+		podbean.offAir();		
+		podbean.endProcess();
 	}
 }
