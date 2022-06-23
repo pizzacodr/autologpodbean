@@ -23,6 +23,8 @@ class Podbean {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("use-fake-ui-for-media-stream");
 		options.addArguments("use-fake-device-for-media-stream");
+		options.addArguments("--no-sandbox");
+		options.addArguments("--disable-crash-reporter");
 			
 		if (isHeadless) {
 			options.addArguments("--headless");
